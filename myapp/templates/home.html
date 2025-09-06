@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"  name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>TODO LIST</title>
+    <!-- Incluye tus links de CSS y JS aquí -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- mis estilos -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+</head>
+<body>
+<header data-bs-theme="dark" class="mt-4 mb-4 text-center">
+  <h1>TODO LIST</h1>
+</header>
+
+<section class="main-container container p-3">
+    <div class="top">
+        <button type="button" class="btn btnAction text-white fw-bold" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <span class="add-text">Add Task</span>
+            <span class="add-icon"><i class="fa-solid fa-plus"></i></span>
+        </button>
+        
+        <div class="filter-container d-flex">
+            <form action="." method="GET">
+                <select onchange="this.form.submit()" class="filter form-select fw-bold" name="verPrioridad">
+                    <option disabled selected>Prioridad</option>
+                    <option value="Todo">Ver Todo</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                </select>
+            </form>
+            <form action="." method="GET" class="ms-1">
+                <select onchange="this.form.submit()" class="filter form-select fw-bold" name="mostrar">
+                    <option disabled selected>Mostrar</option>
+                    <option value="verTodo">All</option>
+                    <option value="1">Complete</option>
+                    <option value="0">Incomplete</option>
+                </select>
+            </form>
+        </div>
+    </div>
+    
+    <div class="list">
+        {% for tarea in lista %}
+        <div class="task mb-3">
+            <div class="p-1 m-0 p-0 corner" data-prioridad="{{ tarea.prioridad }}"></div>
+            <input type="checkbox" 
+                class="chk-estado ms-3" 
+                data-id="{{ tarea.id }}" 
+                data-estado="{{ tarea.estado }}" 
+                {% if tarea.estado == 1 %}checked{% endif %}>
+            
+            <form id="form-{{ tarea.id }}" method="POST" action="." style="display:none;">
+                {% csrf_token %}
+                <input type="hidden" name="check" value="{{ tarea.id }}">
+                <input type="hidden" name="lastEstado" value="{{ tarea.estado }}">
+            </form>
+
+            <div class="task_info">
+                <p class="m-0 tarea-nombre {% if tarea.estado == 1 %}completada{% endif %}">
+                    {{ tarea.name }}
+                </p>
+                <p class="date">{{ tarea.fecha }}</p>
+            </div>
+            
+            <div class="actions">
+                <button data-prioridad="{{ tarea.prioridad }}" data-id="{{ tarea.id }}" data-title="{{ tarea.name }}" name="edit" class="btn" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <i class="fa-solid fa-edit"></i>
+                </button>
+                <form action="./delete/" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button name="delete" value="{{ tarea.id }}" class="btn">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- modales -->
+{% include 'modales/modalAgregar.html' %}
+{% include 'modales/modalEditar.html' %}
+ 
+<script>
+    const urlCambiarEstado = "{% url 'cambiar_estado' %}";
+</script> 
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+<script src="{% static 'js/tareas.js' %}"></script>
+<script src="{% static 'js/prioridades.js' %}"></script> 
+<script src="{% static 'js/modalEdit.js' %}"></script>   
+</body>
+</html>
