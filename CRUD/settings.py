@@ -32,6 +32,10 @@ ALLOWED_HOSTS = [
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://todo2-production.up.railway.app"
+]
+
 # Application definition
 
 INSTALLED_APPS = [
