@@ -74,11 +74,10 @@ def delete_task(request):
 def cambiar_estado(request):
     if request.method == "POST":
         tarea_id = request.POST.get('check')
-        last_estado = int(request.POST.get('lastEstado'))
 
         tarea = get_object_or_404(Tareas, id=tarea_id)
 
-        if last_estado == 0:
+        if tarea.estado == 0:
             tarea.estado = 1
             tarea.save()
         else:

@@ -58,7 +58,6 @@
             <form id="form-{{ tarea.id }}" method="POST" action="." style="display:none;">
                 {% csrf_token %}
                 <input type="hidden" name="check" value="{{ tarea.id }}">
-                <input type="hidden" name="lastEstado" value="{{ tarea.estado }}">
             </form>
 
             <div class="task_info">
